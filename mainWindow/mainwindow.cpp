@@ -33,7 +33,57 @@ void MainWindow::initMainWindow()
 void MainWindow::initWindow()
 {
     m_pressMouse = 0;
+    dlg = nullptr;
 
+    m_stsEmpty = nullptr;
+    m_stsDebugInfo = nullptr;
+    m_stsSysTime = nullptr;
+    m_stsCopyright = nullptr;
+
+    initStatusBar();
+}
+
+void MainWindow::initStatusBar()
+{
+    // 状态栏分别为：
+    // 临时信息（可不用）做一空的label占位
+    // 提示信息（可多个）
+    // 系统时间
+    // 版本信息（或版权声明）
+
+    //ui->statusbar->setStyleSheet(QString("QStatusBar::item{border: 0px}")); // 不显示边框
+    ui->statusbar->setSizeGripEnabled(false);//去掉状态栏右下角的三角
+
+
+    m_stsEmpty = new QLabel();
+    m_stsDebugInfo = new QLabel();
+    m_stsSysTime = new QLabel();
+    m_stsCopyright = new QLabel();
+    m_stsExit = new QLabel();
+
+    m_stsEmpty->setMinimumWidth(100);
+    ui->statusbar->addWidget(m_stsEmpty);
+    m_stsDebugInfo->setMinimumWidth(this->width()/3);
+    ui->statusbar->addWidget(m_stsDebugInfo);
+
+    //ui->statusbar->showMessage(tr("临时信息!"),2000);//显示临时信息2000ms 前面的正常信息被覆盖 当去掉后一项时，会一直显示
+
+    QDateTime dateTime(QDateTime::currentDateTime());
+    QString timeStr = dateTime.toString("yyyy-MM-dd HH:mm::ss.zzz");
+    m_stsSysTime->setText(timeStr);
+    ui->statusbar->addPermanentWidget(m_stsSysTime);
+
+    // 版权信息
+    m_stsCopyright->setFrameStyle(QFrame::NoFrame);
+    m_stsCopyright->setText(tr("  <a href=\"https://www.latelee.org\">个人主页</a>  "));
+    m_stsCopyright->setOpenExternalLinks(true);
+    ui->statusbar->addPermanentWidget(m_stsCopyright);
+
+    // 退出图标
+    QPixmap exitIcon(":/images/exit.jpg");
+    //exitIcon = exitIcon.scaled(label->width(),label->height());
+    m_stsExit->setPixmap(exitIcon);
+    ui->statusbar->addPermanentWidget(m_stsExit);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -176,6 +226,7 @@ void MainWindow::on_pushButton_2_clicked()
         isTop = false;
         ui->pushButton_2->setText(tr("取消置顶"));
         ui->pushButton->setEnabled(false);
+        m_stsDebugInfo->setText("置顶");
     }
     else
     {
@@ -185,6 +236,7 @@ void MainWindow::on_pushButton_2_clicked()
         isTop = true;
         ui->pushButton_2->setText(tr("置顶"));
         ui->pushButton->setEnabled(true);
+        m_stsDebugInfo->setText("置顶取消");
     }
 }
 
@@ -192,6 +244,20 @@ void MainWindow::on_pushButton_3_clicked()
 {
     ui->pushButton_3->setText(tr("退出程序"));
     ui->pushButton_3->setIcon(QIcon(":images/exit.png"));
+
+    //窗口左上角的位置(含边框)
+        qDebug() << this->frameGeometry().x() << this->frameGeometry().y();//1
+        qDebug() << this->x()  << this->y();//2
+        qDebug() << this->pos().x() << this->pos().y();//3
+        //窗口的宽度和高度(含边框)
+        qDebug() << this->frameGeometry().width() << this->frameGeometry().height();
+        //窗口左上角的位置(不含边框)
+        qDebug() << this->geometry().x() << this->geometry().y();
+        //窗口的宽度和高度(不含边框)
+        qDebug() << this->geometry().width() << this->geometry().height();//1
+        qDebug() << this->width() << this->height();//2
+        qDebug() << this->rect().width() << this->rect().height();//3
+        qDebug() << this->size().width() << this->size().height();//4
 }
 
 void MainWindow::on_pushButton_4_clicked()
@@ -207,6 +273,36 @@ void MainWindow::on_pushButton_4_clicked()
 
 void MainWindow::on_pushButton_5_clicked()
 {
+    QString str;
+    str = "current text: " + ui->comboBox->currentText();
+    m_stsDebugInfo->setText(str);
+
     qDebug() << ui->comboBox->currentText();
     qDebug() << ui->comboBox->currentIndex();
+}
+
+#include "dialog.h"
+void MainWindow::on_pushButton_6_clicked()
+{
+    if (dlg == nullptr)
+    {
+        dlg = new Dialog;
+    }
+
+    // 如果要隐藏界面，则要将进行signal与slot的关联
+    // sendsignal为子窗口发送的信号
+    // 主界面保持的话，无须如此
+    //connect(dlg, SIGNAL(sendsignal(int, int)), this, SLOT(reshow(int, int))); // 旧格式
+    connect(dlg, &Dialog::sendsignal, this, &MainWindow::reshow); // 新格式
+    this->hide(); // 隐藏主界面
+    dlg->show(); // 显示子界面
+
+    m_stsDebugInfo->setText("show sub dialog");
+}
+
+void MainWindow::reshow(int a, int b)
+{
+    qDebug() << a;
+    qDebug() << b;
+    this->show();
 }

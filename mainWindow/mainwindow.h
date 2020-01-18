@@ -5,7 +5,12 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QLabel>
+
+#include <QDateTime>
 #include <QDebug>
+
+#include "dialog.h"
 
 // 界面显示中文，文件需要使用UTF8 BOM格式保存，否则乱码--windows vs编译器测试
 #pragma execution_character_set("utf-8")
@@ -25,6 +30,7 @@ public:
 public:
     void initMainWindow();
     void initWindow();
+    void initStatusBar();
 
     void mousePressEvent(QMouseEvent *event); // 鼠标按下
     void mouseMoveEvent(QMouseEvent *event); // 鼠标移动
@@ -38,7 +44,16 @@ public:
     void keyPressEvent(QKeyEvent *event);   // 按键按下
     void keyReleaseEvent(QKeyEvent *event); // 按键释放
 
+
+    QLabel* m_stsEmpty;
+    QLabel* m_stsDebugInfo;
+    QLabel* m_stsSysTime;
+    QLabel* m_stsCopyright;
+    QLabel* m_stsExit;
+
 private slots:
+    void reshow(int a, int b); // 必须是slot
+
     void on_pushButton_clicked();
 
     void on_pushButton_2_clicked();
@@ -49,7 +64,11 @@ private slots:
 
     void on_pushButton_5_clicked();
 
+    void on_pushButton_6_clicked();
+
 private:
     Ui::MainWindow *ui;
+
+    Dialog* dlg;
 };
 #endif // MAINWINDOW_H
