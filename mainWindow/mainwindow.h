@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <QMouseEvent>
+#include <QKeyEvent>
 #include <QMessageBox>
+#include <QDebug>
 
 // 界面显示中文，文件需要使用UTF8 BOM格式保存，否则乱码--windows vs编译器测试
 #pragma execution_character_set("utf-8")
@@ -24,11 +26,17 @@ public:
     void initMainWindow();
     void initWindow();
 
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event); // 鼠标按下
+    void mouseMoveEvent(QMouseEvent *event); // 鼠标移动
+    void mouseReleaseEvent(QMouseEvent *event); // 鼠标释放
+    void mouseDoubleClickEvent(QMouseEvent *event); // 鼠标双击
 
+    int m_pressMouse; // 当点击下拉框时，窗口跳动，加上判断
     QPoint m_startPos;
     QPoint m_windowPos;
+
+    void keyPressEvent(QKeyEvent *event);   // 按键按下
+    void keyReleaseEvent(QKeyEvent *event); // 按键释放
 
 private slots:
     void on_pushButton_clicked();
@@ -36,6 +44,10 @@ private slots:
     void on_pushButton_2_clicked();
 
     void on_pushButton_3_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void on_pushButton_5_clicked();
 
 private:
     Ui::MainWindow *ui;

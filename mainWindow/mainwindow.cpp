@@ -32,6 +32,7 @@ void MainWindow::initMainWindow()
 // 布局、控件、信号等初始化
 void MainWindow::initWindow()
 {
+    m_pressMouse = 0;
 
 }
 
@@ -44,17 +45,83 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         m_startPos = event->globalPos();
         //记录窗体的世界坐标
         m_windowPos = this->frameGeometry().topLeft();
+        m_pressMouse = 1;
+    }
+    else if(event->button() == Qt::RightButton)
+    {
+
     }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->buttons() & Qt::LeftButton)
+    if (event->buttons() == Qt::LeftButton)
     {
+        if (m_pressMouse)
+        {
         //移动中的鼠标位置相对于初始位置的相对位置
         QPoint relativePos = event->globalPos() - m_startPos;
         //然后移动窗体即可
         this->move(m_windowPos + relativePos );
+
+        }
+    }
+    else if(event->button() == Qt::RightButton)
+    {
+
+    }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    m_pressMouse = 0;
+}
+
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
+{
+
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->modifiers() == Qt::ControlModifier) // 特殊按键
+    {
+        if(event->key() == Qt::Key_M)
+        {
+            qDebug() << "M press";
+        }
+    }
+//    else
+//    {
+//        QMainWindow::keyPressEvent(event);
+//    }
+
+    if(event->key() == Qt::Key_Up)
+    {
+        if(event->isAutoRepeat())   return;
+        qDebug() << "Up press";
+
+    }
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if(event->modifiers() == Qt::ControlModifier) // 特殊按键
+    {
+        if(event->key() == Qt::Key_M)
+        {
+            qDebug() << "M release";
+        }
+    }
+    else
+    {
+        QMainWindow::keyPressEvent(event);
+    }
+
+    if(event->key() == Qt::Key_Up)
+    {
+        if(event->isAutoRepeat())   return;
+        qDebug() << "Up release";
     }
 }
 
@@ -125,4 +192,21 @@ void MainWindow::on_pushButton_3_clicked()
 {
     ui->pushButton_3->setText(tr("退出程序"));
     ui->pushButton_3->setIcon(QIcon(":images/exit.png"));
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    QStringList list;
+    list.clear();
+    list << "1200" << "2400" << "4800" << "9600" << "14400" << \
+         "19200" << "38400" << "43000" << "57600" << "76800" << \
+         "115200" << "230400" << "256000" << "460800" << "921600";
+    ui->comboBox->addItems(list);
+    ui->comboBox->setCurrentText(tr("115200"));
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    qDebug() << ui->comboBox->currentText();
+    qDebug() << ui->comboBox->currentIndex();
 }
