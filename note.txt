@@ -1,0 +1,8 @@
+
+## 
+窗口显示中文，源码文件需要UTF8 BOM格式。VS编译器测试。
+
+##
+
+listwidget菜单：
+https://blog.csdn.net/qq_37233607/article/details/78649151

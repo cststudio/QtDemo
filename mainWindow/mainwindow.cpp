@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -6,6 +6,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    initMainWindow();
+
+    initWindow();
 }
 
 MainWindow::~MainWindow()
@@ -13,3 +17,98 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+// 对主窗口的初始化
+void MainWindow::initMainWindow()
+{
+    setWindowTitle(tr("MainWindow Demo"));
+    setMinimumSize(480, 320);
+
+    Qt::WindowFlags winFlags  = Qt::Dialog;
+    winFlags = winFlags | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint;
+
+    setWindowFlags(winFlags);
+}
+
+// 布局、控件、信号等初始化
+void MainWindow::initWindow()
+{
+
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    //当鼠标左键点击时.
+    if (event->button() == Qt::LeftButton)
+    {
+        //记录鼠标的世界坐标
+        m_startPos = event->globalPos();
+        //记录窗体的世界坐标
+        m_windowPos = this->frameGeometry().topLeft();
+    }
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() & Qt::LeftButton)
+    {
+        //移动中的鼠标位置相对于初始位置的相对位置
+        QPoint relativePos = event->globalPos() - m_startPos;
+        //然后移动窗体即可
+        this->move(m_windowPos + relativePos );
+    }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    //QMessageBox::about(this, "关于", "这是带html标签的<font color='red'>信息</font>");
+    //QMessageBox::information(this, tr("提示标题"), tr("这是信息窗口"));
+    //QMessageBox::question(this, tr("询问标题"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    // 加其它按钮
+    //QMessageBox::question(this, tr("询问标题"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Discard | QMessageBox::Save, QMessageBox::Yes);
+    //QMessageBox::warning(this, tr("警告标题"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    //QMessageBox::critical(this, tr("严重问题"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+    //带交互的
+    QMessageBox message(QMessageBox::NoIcon, "Show Qt", "Do you want to show Qt dialog?", QMessageBox::Yes | QMessageBox::No | QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Discard | QMessageBox::Save, nullptr);
+    int ret = message.exec();
+    if (ret == QMessageBox::Yes)
+    {
+        QMessageBox::about(this, "关于", "这是带html标签的<font color='red'>信息</font>");
+    }
+    else if (ret == QMessageBox::Abort)
+    {
+        QMessageBox::critical(this, tr("放弃"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    }
+    else if (ret == QMessageBox::Retry)
+    {
+        QMessageBox::question(this, tr("重试"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    }
+
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    static bool isTop = true;
+
+    // 置顶 注：切换时会有闪烁
+    Qt::WindowFlags winFlags  = Qt::Dialog;
+
+    if (isTop)
+    {
+        winFlags |= Qt::WindowStaysOnTopHint;
+        setWindowFlags(winFlags);
+        showNormal();
+        isTop = false;
+        ui->pushButton_2->setText(tr("取消置顶"));
+        ui->pushButton->setEnabled(false);
+    }
+    else
+    {
+        winFlags  &= ~Qt::WindowStaysOnTopHint;
+        setWindowFlags(winFlags);
+        showNormal();
+        isTop = true;
+        ui->pushButton_2->setText(tr("置顶"));
+        ui->pushButton->setEnabled(true);
+    }
+}
