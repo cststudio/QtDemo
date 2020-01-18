@@ -75,15 +75,40 @@ void MainWindow::initStatusBar()
 
     // 版权信息
     m_stsCopyright->setFrameStyle(QFrame::NoFrame);
-    m_stsCopyright->setText(tr("  <a href=\"https://www.latelee.org\">个人主页</a>  "));
+    m_stsCopyright->setText(tr("  <a href=\"https://www.latelee.org\">技术主页</a>  "));
     m_stsCopyright->setOpenExternalLinks(true);
     ui->statusbar->addPermanentWidget(m_stsCopyright);
 
     // 退出图标
+    m_stsExit->installEventFilter(this); // 安装事件过滤，以便获取其单击事件
+    connect(this, &MainWindow::sig_exit, qApp, &QApplication::quit); // 直接关联到全局的退出槽
+    // 贴图
     QPixmap exitIcon(":/images/exit.jpg");
-    //exitIcon = exitIcon.scaled(label->width(),label->height());
     m_stsExit->setPixmap(exitIcon);
     ui->statusbar->addPermanentWidget(m_stsExit);
+}
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched == m_stsExit) // 程序退出
+    {
+        //判断事件
+        if(event->type() == QEvent::MouseButtonPress)
+        {
+            m_stsDebugInfo->setText("press exit label");
+            // TODO：直接退出还是发信号？
+            emit sig_exit();
+            return true; // 事件处理完毕
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return QWidget::eventFilter(watched, event);
+    }
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -290,17 +315,17 @@ void MainWindow::on_pushButton_6_clicked()
     }
 
     // 如果要隐藏界面，则要将进行signal与slot的关联
-    // sendsignal为子窗口发送的信号
+    // sig_backMain为子窗口发送的信号
     // 主界面保持的话，无须如此
-    //connect(dlg, SIGNAL(sendsignal(int, int)), this, SLOT(reshow(int, int))); // 旧格式
-    connect(dlg, &Dialog::sendsignal, this, &MainWindow::reshow); // 新格式
+    //connect(dlg, SIGNAL(sig_backMain(int, int)), this, SLOT(on_reshow(int, int))); // 旧格式
+    connect(dlg, &Dialog::sig_backMain, this, &MainWindow::on_reshow); // 新格式
     this->hide(); // 隐藏主界面
     dlg->show(); // 显示子界面
 
     m_stsDebugInfo->setText("show sub dialog");
 }
 
-void MainWindow::reshow(int a, int b)
+void MainWindow::on_reshow(int a, int b)
 {
     qDebug() << a;
     qDebug() << b;

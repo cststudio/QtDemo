@@ -41,6 +41,7 @@ public:
     QPoint m_startPos;
     QPoint m_windowPos;
 
+    bool eventFilter(QObject *watched, QEvent *event);
     void keyPressEvent(QKeyEvent *event);   // 按键按下
     void keyReleaseEvent(QKeyEvent *event); // 按键释放
 
@@ -51,8 +52,11 @@ public:
     QLabel* m_stsCopyright;
     QLabel* m_stsExit;
 
+signals:
+    void sig_exit();
+
 private slots:
-    void reshow(int a, int b); // 必须是slot
+    void on_reshow(int a, int b); // 必须是slot
 
     void on_pushButton_clicked();
 

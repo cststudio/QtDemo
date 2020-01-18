@@ -15,7 +15,7 @@ Dialog::~Dialog()
 
 void Dialog::on_pushButton_clicked()
 {
-    emit sendsignal(100, 200); // 发送信号
+    emit sig_backMain(100, 200); // 发送信号
     qDebug() << "sending signal...";
     this->close();
 }
