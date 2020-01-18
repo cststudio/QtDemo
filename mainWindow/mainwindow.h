@@ -10,6 +10,10 @@
 #include <QDateTime>
 #include <QDebug>
 
+#include <QSettings>
+#include <QFileInfo>
+#include <QStringLiteral>
+
 #include "dialog.h"
 
 // 界面显示中文，文件需要使用UTF8 BOM格式保存，否则乱码--windows vs编译器测试
@@ -69,6 +73,10 @@ private slots:
     void on_pushButton_5_clicked();
 
     void on_pushButton_6_clicked();
+
+    void on_pushButton_7_clicked();
+
+    void on_pushButton_8_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -331,3 +331,23 @@ void MainWindow::on_reshow(int a, int b)
     qDebug() << b;
     this->show();
 }
+
+#include "common.h"
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    QString name = "Video";
+    registryWrite(name, 720, 480);
+}
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    QString name;
+    int width, height;
+    registryRead(name, width, height);
+
+    qDebug() << name;
+    qDebug() << width;
+    qDebug() << height;
+
+}

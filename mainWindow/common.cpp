@@ -70,3 +70,46 @@ int hexArrayToString(QByteArray& hexArr, QString& str)
     str = hexArr.toHex(' ').toLower();
     return ret;
 }
+
+// 注册表读写
+// 键名称为示例
+int registryWrite(QString& name, int width, int height)
+{
+    QString filePath = QCoreApplication::applicationFilePath();
+    QString fileName = QFileInfo(filePath).fileName();
+
+    const QString key = QStringLiteral("HKEY_CURRENT_USER\\Software\\Classes\\Applications\\") + fileName;
+    QSettings settings(key, QSettings::NativeFormat);
+    if (settings.status() != QSettings::NoError) {
+        return -1;
+    }
+    //settings.beginGroup("res");
+    // 写入键值对
+    settings.setValue("Name", name);
+    settings.setValue("Width", width);
+    settings.setValue("Height", height);
+    //settings.endGroup();
+    return 0;
+}
+
+int registryRead(QString& name, int& width, int& height)
+{
+    QString filePath = QCoreApplication::applicationFilePath();
+    QString fileName = QFileInfo(filePath).fileName();
+
+    const QString key = QStringLiteral("HKEY_CURRENT_USER\\Software\\Classes\\Applications\\") + fileName;
+    QSettings settings(key, QSettings::NativeFormat);
+    if (settings.status() != QSettings::NoError) {
+        return -1;
+    }
+
+    // 读键值对
+    //settings.beginGroup("res");
+    name = settings.value("Name").toString();
+    width = settings.value("Width").toInt();
+    height = settings.value("Height").toInt();
+    //settings.endGroup();
+
+    return 0;
+}
+
