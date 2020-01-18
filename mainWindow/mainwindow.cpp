@@ -69,15 +69,23 @@ void MainWindow::on_pushButton_clicked()
     //QMessageBox::critical(this, tr("严重问题"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
     //带交互的
-    QMessageBox message(QMessageBox::NoIcon, "Show Qt", "Do you want to show Qt dialog?", QMessageBox::Yes | QMessageBox::No | QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Discard | QMessageBox::Save, nullptr);
+    QMessageBox message(QMessageBox::NoIcon, "测试", "Yes 关于 No显示带图片的窗口", QMessageBox::Yes | QMessageBox::No | QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Discard | QMessageBox::Save, nullptr);
     int ret = message.exec();
     if (ret == QMessageBox::Yes)
     {
         QMessageBox::about(this, "关于", "这是带html标签的<font color='red'>信息</font>");
     }
+    else if (ret == QMessageBox::No)
+    {
+        QMessageBox msg(QMessageBox::NoIcon, "关于", "关于本程序，左侧是图片");
+        msg.setIconPixmap(QPixmap(":images/logo1.jpg"));
+        //msg.setIconPixmap(QPixmap(":subprefix/images/logo.png")); // 有前缀
+        msg.exec();
+    }
     else if (ret == QMessageBox::Abort)
     {
-        QMessageBox::critical(this, tr("放弃"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        //QMessageBox::critical(this, tr("放弃"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        QMessageBox::critical(this, tr("写入文件"), tr("打开文件 %1 失败, 无法写入\n%2").arg("foo.bat").arg("错误：文件不存在"), QMessageBox::Ok);
     }
     else if (ret == QMessageBox::Retry)
     {
@@ -111,4 +119,10 @@ void MainWindow::on_pushButton_2_clicked()
         ui->pushButton_2->setText(tr("置顶"));
         ui->pushButton->setEnabled(true);
     }
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    ui->pushButton_3->setText(tr("退出程序"));
+    ui->pushButton_3->setIcon(QIcon(":images/exit.png"));
 }

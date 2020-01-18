@@ -2,7 +2,9 @@
 ## 
 窗口显示中文，源码文件需要UTF8 BOM格式。VS编译器测试。
 
-##
+添加图标资源：
+新建文件，选择qrc，右键选择文件，此为可视化操作，也可直接改qrc文件。  
+如果qrc中指定的文件不存在，编译报错。图标可在button中使用。  
 
 listwidget菜单：
 https://blog.csdn.net/qq_37233607/article/details/78649151
