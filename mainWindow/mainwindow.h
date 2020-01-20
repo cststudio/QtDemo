@@ -14,6 +14,12 @@
 #include <QFileInfo>
 #include <QStringLiteral>
 
+#include <QSystemTrayIcon>
+#include <QMenu>
+
+#include <QMovie>
+#include <QPixmap>
+
 #include "dialog.h"
 
 // 界面显示中文，文件需要使用UTF8 BOM格式保存，否则乱码--windows vs编译器测试
@@ -32,9 +38,12 @@ public:
     ~MainWindow();
 
 public:
+
+    // 各种初始化
     void initMainWindow();
     void initWindow();
     void initStatusBar();
+    void initSystemTray();
 
     void mousePressEvent(QMouseEvent *event); // 鼠标按下
     void mouseMoveEvent(QMouseEvent *event); // 鼠标移动
@@ -49,18 +58,27 @@ public:
     void keyPressEvent(QKeyEvent *event);   // 按键按下
     void keyReleaseEvent(QKeyEvent *event); // 按键释放
 
+    void showDebugInfo(QString& str);
+    void showDebugInfo(int& value);
 
+    // 状态栏相关
     QLabel* m_stsEmpty;
     QLabel* m_stsDebugInfo;
     QLabel* m_stsSysTime;
     QLabel* m_stsCopyright;
     QLabel* m_stsExit;
 
+    QSystemTrayIcon *trayicon;
+    QMenu *trayiconMenu;
+
+    void changeEvent(QEvent * event);
+
 signals:
     void sig_exit();
 
 private slots:
     void on_reshow(int a, int b); // 必须是slot
+    void on_systemTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
 
     void on_pushButton_clicked();
 
@@ -77,6 +95,20 @@ private slots:
     void on_pushButton_7_clicked();
 
     void on_pushButton_8_clicked();
+
+    void on_pushButton_9_clicked();
+
+    void on_pushButton_10_clicked();
+
+    void on_horizontalSlider_valueChanged(int value);
+
+    void on_verticalSlider_valueChanged(int value);
+
+    void on_pushButton_11_clicked();
+
+    void on_pushButton_12_clicked();
+
+    void on_spinBox_valueChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

@@ -69,7 +69,7 @@ void MainWindow::initStatusBar()
     //ui->statusbar->showMessage(tr("临时信息!"),2000);//显示临时信息2000ms 前面的正常信息被覆盖 当去掉后一项时，会一直显示
 
     QDateTime dateTime(QDateTime::currentDateTime());
-    QString timeStr = dateTime.toString("yyyy-MM-dd HH:mm::ss.zzz");
+    QString timeStr = dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
     m_stsSysTime->setText(timeStr);
     ui->statusbar->addPermanentWidget(m_stsSysTime);
 
@@ -81,11 +81,106 @@ void MainWindow::initStatusBar()
 
     // 退出图标
     m_stsExit->installEventFilter(this); // 安装事件过滤，以便获取其单击事件
-    connect(this, &MainWindow::sig_exit, qApp, &QApplication::quit); // 直接关联到全局的退出槽
+    m_stsExit->setToolTip("Exit App");
     // 贴图
     QPixmap exitIcon(":/images/exit.jpg");
+    m_stsExit->setMinimumWidth(32);
     m_stsExit->setPixmap(exitIcon);
     ui->statusbar->addPermanentWidget(m_stsExit);
+    
+    connect(this, &MainWindow::sig_exit, qApp, &QApplication::quit); // 直接关联到全局的退出槽
+}
+
+void MainWindow::showDebugInfo(QString& str)
+{
+    m_stsDebugInfo->setText(str);
+}
+
+void MainWindow::showDebugInfo(int& value)
+{
+    m_stsDebugInfo->setNum(value);
+}
+
+
+void MainWindow::initSystemTray()
+{
+    trayicon = new QSystemTrayIcon(this);
+    QAction *quit = new QAction(tr("exit"), this);
+    trayiconMenu = new QMenu(this);
+    trayiconMenu->addAction(quit); //这里可以添加多个菜单
+    // trayiconMenu->addSeparator();
+
+    QIcon icon(":images/logo.png");
+    trayicon->setIcon(icon);
+    trayicon->setToolTip(tr("mainWindow"));
+    trayicon->setContextMenu(trayiconMenu);
+
+    connect(quit, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
+    //connect(this, &MainWindow::sig_exit, qApp, &QApplication::quit);
+    connect(trayicon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason)));
+
+    trayicon->show();
+}
+
+//下面处理不同情况下，单击托盘图标的操作
+void MainWindow::on_systemTrayIconClicked(QSystemTrayIcon::ActivationReason reason)
+{
+    switch(reason)
+    {
+    //单击
+    case QSystemTrayIcon::Trigger:
+    {
+        //恢复窗口显示
+        if(this->isVisible())//判断窗口是否可见
+        {
+            if(this->isMinimized())//窗口是否是最小化
+            {
+                this->setWindowFlags(Qt::WindowStaysOnTopHint);//置顶
+                //  this->setWindowFlags(Qt::Widget);//取消置顶
+                this->setWindowState(Qt::WindowActive);
+                this->setGeometry(this->geometry());//使得每次显示窗口为上次的位置
+                this->show();
+            }
+            else
+            {
+                this->hide();
+            }
+        }
+        else
+        {
+            this->setWindowFlags(Qt::WindowStaysOnTopHint);//置顶
+            //  this->setWindowFlags(Qt::Widget);//取消置顶
+            this->setWindowState(Qt::WindowActive);
+            this->setGeometry(this->geometry());
+            this->show();
+        }
+    }
+    break;
+    default:
+    break;
+    }
+}
+
+// 异常
+void MainWindow::changeEvent(QEvent * event)
+{
+//    if (event->type() != QEvent::WindowStateChange)
+//    {
+//        return;
+//    }
+//    if (this->windowState() == Qt::WindowMaximized)
+//    {
+
+//    }
+//    else if (this->windowState() == Qt::WindowMinimized)
+//    {
+//        if (trayicon->isVisible())
+//        {
+//            //this->hide();
+//            //this->close();
+//            //event->ignore();
+//        }
+//    }
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -268,6 +363,7 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_pushButton_3_clicked()
 {
     ui->pushButton_3->setText(tr("退出程序"));
+    ui->pushButton_3->setIconSize(ui->pushButton_3->rect().size()); // 设置大小
     ui->pushButton_3->setIcon(QIcon(":images/exit.png"));
 
     //窗口左上角的位置(含边框)
@@ -350,4 +446,71 @@ void MainWindow::on_pushButton_8_clicked()
     qDebug() << width;
     qDebug() << height;
 
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    static int init = 1;
+    static QMovie *pMovie = nullptr; // 可做成员变量
+    if (init)
+    {
+        pMovie = new QMovie(":images/run.gif");
+        init = 0;
+    }
+
+    static int play = 1;
+    if (play == 1)
+    {
+        ui->label->setFixedSize(329, 247);
+        ui->label->setScaledContents(true);
+        ui->label->setMovie(pMovie);
+        pMovie->start();
+        ui->pushButton_9->setText("停止动画");
+        play = 0;
+    }
+    else
+    {
+        pMovie->stop();
+        ui->label->clear();
+        ui->pushButton_9->setText("播放动画");
+        play = 1;
+    }
+}
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    QPixmap pixmap(":images/logo.png");
+    ui->label->setPixmap(pixmap);
+    ui->label->setFixedSize(128, 128);
+    ui->label->setScaledContents(true);
+}
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    showDebugInfo(value);
+}
+
+void MainWindow::on_verticalSlider_valueChanged(int value)
+{
+    showDebugInfo(value);
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+    int val = ui->horizontalSlider->value();
+    QString tmp = "val: " + QString::number(val);
+    //QString tmp = QString::asprintf("value: %d", val);
+    ui->pushButton_11->setText(tmp);
+}
+
+void MainWindow::on_pushButton_12_clicked()
+{
+    int val = ui->spinBox->value();
+    QString tmp = "val: " + QString::number(val);
+    ui->pushButton_12->setText(tmp);
+}
+
+void MainWindow::on_spinBox_valueChanged(int arg1)
+{
+    showDebugInfo(arg1);
 }

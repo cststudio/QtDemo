@@ -4,6 +4,9 @@
         <file>images/exit.jpg</file>
         <file>images/logo.png</file>
         <file>images/logo1.jpg</file>
+        <file>images/logo1.ico</file>
+        
+        <file>images/run.gif</file>
     </qresource>
     <qresource prefix="/subprefix">
         <file>images/logo.png</file>
