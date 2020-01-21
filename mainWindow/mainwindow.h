@@ -20,6 +20,9 @@
 #include <QMovie>
 #include <QPixmap>
 
+#include <QTimer>
+#include <QTimerEvent>
+
 #include "dialog.h"
 
 // 界面显示中文，文件需要使用UTF8 BOM格式保存，否则乱码--windows vs编译器测试
@@ -73,6 +76,11 @@ public:
 
     void changeEvent(QEvent * event);
 
+    QTimer* m_timer;// 定时器对象
+
+    int id1, id2;
+    void timerEvent(QTimerEvent *event);
+
 signals:
     void sig_exit();
 
@@ -109,6 +117,14 @@ private slots:
     void on_pushButton_12_clicked();
 
     void on_spinBox_valueChanged(int arg1);
+
+    void on_pushButton_13_clicked();
+
+    void on_pushButton_14_clicked();
+
+    void on_pushButton_15_clicked();
+
+    void on_pushButton_16_clicked();
 
 private:
     Ui::MainWindow *ui;

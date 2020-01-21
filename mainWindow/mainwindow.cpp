@@ -514,3 +514,132 @@ void MainWindow::on_spinBox_valueChanged(int arg1)
 {
     showDebugInfo(arg1);
 }
+
+// 按钮添加菜单
+void MainWindow::on_pushButton_13_clicked()
+{
+    QMenu *mymenu=new QMenu;
+    QList<QAction*> aList;
+    for (int i = 0; i < 4; i++)
+    {
+        QAction *click=new QAction("菜单按钮"+QString::number(i),this);
+        aList.append(click);
+    }
+
+    mymenu->addActions(aList);
+    ui->pushButton_13->setStyleSheet("QPushButton::menu-indicator{image:none}");
+    ui->pushButton_13->setMenu(mymenu);
+    // TODO：如果响应事件
+}
+
+void MainWindow::on_pushButton_14_clicked()
+{
+    ui->tabWidget->clear();//清空选项卡
+
+        QWidget *tabSports=new QWidget(this);
+        QWidget *tabMusic=new QWidget(this);
+        QWidget *tabSoftware=new QWidget(this);
+        QWidget *tabDigital=new QWidget(this);
+        QWidget *tabLanguage=new QWidget(this);
+
+        ui->tabWidget->setTabPosition(QTabWidget::North);//设置选项卡的方位东南西北，默认在上方
+
+            ui->tabWidget->addTab(tabSports,tr("运动"));//在后面添加选项卡
+            ui->tabWidget->addTab(tabMusic,tr("音乐"));
+            ui->tabWidget->addTab(tabSoftware,QIcon("F:\\磊神图片\\icons\\1.ico"),tr("软件"));//在后面添加带图标的选项卡
+            ui->tabWidget->insertTab(3,tabDigital,tr("数码"));//插入选项卡
+            ui->tabWidget->insertTab(4,tabLanguage,QIcon("F:\\磊神图片\\icons\\3.ico"),tr("语言"));//插入带图标的选项卡
+            ui->tabWidget->setTabShape(QTabWidget::Triangular);//设置选项卡的形状
+            //ui->tabWidget->removeTab(0);//移除选项卡
+
+            ui->tabWidget->setTabIcon(0,QIcon("F:\\磊神图片\\icons\\2.ico"));//设置选项卡图标
+            ui->tabWidget->setTabIcon(1,QIcon("F:\\磊神图片\\icons\\4.ico"));//设置选项卡图标
+            ui->tabWidget->setTabIcon(3,QIcon("F:\\磊神图片\\icons\\5.ico"));//设置选项卡图标
+            ui->tabWidget->setIconSize(QSize(50,25));//设置图标的大小(选项卡的大小也会改变)
+            ui->tabWidget->setMovable(true);
+            ui->tabWidget->setTabsClosable(true);//在选项卡上添加关闭按钮
+            qDebug()<<"第一个选项卡名称："<<ui->tabWidget->tabText(0);//获取选项卡名称
+            qDebug()<<"iconSize:"<<ui->tabWidget->iconSize();//获取icon的尺寸
+
+            ui->tabWidget->setTabEnabled(0,false);//禁用选项卡
+            ui->tabWidget->setTabEnabled(1,false);
+            ui->tabWidget->setTabToolTip(2,tr("Beautiful"));//鼠标悬停弹出提示
+            ui->tabWidget->usesScrollButtons();//选项卡太多滚动
+}
+
+// 使用槽实现定时响应事件
+void MainWindow::on_pushButton_15_clicked()
+{
+    static int init = 1;
+    if (init)
+    {
+        // 注：创建定时器，到点自动触发timeout信息，关联到自定义的槽
+        m_timer = new QTimer(this);
+        connect(m_timer,&QTimer::timeout,[=](){
+            QDateTime dateTime(QDateTime::currentDateTime());
+            QString timeStr = dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
+            ui->label_2->setText(timeStr);
+
+            static int i = 0;
+            i++;
+            ui->lcdNumber->display(i);
+        });
+        init = 0;
+    }
+
+    static int play = 1;
+    if (play == 1)
+    {
+        if (m_timer->isActive() == false)
+        {
+           m_timer->start(500);
+        }
+        ui->pushButton_15->setText("停止");
+        play = 0;
+    }
+    else
+    {
+        if(m_timer->isActive() == true)
+        {
+            m_timer->stop();
+        }
+        ui->pushButton_15->setText("开始");
+        play = 1;
+    }
+}
+
+// 另一种方式实现定时器
+void MainWindow::on_pushButton_16_clicked()
+{
+    static int play = 1;
+    if (play == 1)
+    {
+        // 返回定时器ID，timerEvent中会用到，程序只有一个时，可以不判断
+        id1 = startTimer(1000);
+        id2 = startTimer(1000);
+        ui->pushButton_16->setText("停止");
+        play = 0;
+    }
+    else
+    {
+        killTimer(id1); // 停止
+        ui->pushButton_16->setText("开始");
+        play = 1;
+    }
+}
+
+void MainWindow::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == id1)
+    {
+        QDateTime dateTime(QDateTime::currentDateTime());
+        QString timeStr = dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
+        ui->label_2->setText(timeStr);
+    }
+    else if (event->timerId() == id2)
+    {
+        static int i = 0;
+        i++;
+        ui->lcdNumber->display(i);
+    }
+}
