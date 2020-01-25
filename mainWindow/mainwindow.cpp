@@ -32,6 +32,7 @@ void MainWindow::initMainWindow()
 // 布局、控件、信号等初始化
 void MainWindow::initWindow()
 {
+    // 这里是成员变量初始化
     m_pressMouse = 0;
     dlg = nullptr;
 
@@ -40,7 +41,20 @@ void MainWindow::initWindow()
     m_stsSysTime = nullptr;
     m_stsCopyright = nullptr;
 
-    initStatusBar();
+    // 主窗体初始化（注：如果和其它子窗体有前后顺序的，需要注意）
+    initStatusBar(); // 状态栏
+
+    // 额外的窗体初始化
+    if (dlg == nullptr)
+    {
+        dlg = new Dialog;
+    }
+
+    // 菜单栏
+    // 打开、关闭 子对话框。注：myshow是公开的slot函数
+    //ui->actionclose->setEnabled(false); // 有些互斥的，应该要考虑其逻辑关系，此处从略
+    connect(ui->actionopen, &QAction::triggered, dlg, &Dialog::myshow);
+    connect(ui->actionclose, &QAction::triggered, dlg, &Dialog::myclose);
 }
 
 void MainWindow::initStatusBar()
@@ -529,9 +543,65 @@ void MainWindow::on_pushButton_13_clicked()
     mymenu->addActions(aList);
     ui->pushButton_13->setStyleSheet("QPushButton::menu-indicator{image:none}");
     ui->pushButton_13->setMenu(mymenu);
-    // TODO：如果响应事件
+    // TODO：如何响应事件
 }
 
+/////////////
+
+#if 0
+////////////////////////
+#include <QWidget>
+#include <QFileInfo>
+#include <QLineEdit>
+#include <QVBoxLayout>
+
+class GeneralTab : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit GeneralTab(QWidget *parent = nullptr);
+};
+
+GeneralTab::GeneralTab(QWidget *parent)
+    : QWidget(parent)
+{
+    QFileInfo fileInfo(".");
+    QLabel *fileNameLabel = new QLabel(tr("File Name:"));
+        QLineEdit *fileNameEdit = new QLineEdit(fileInfo.fileName());
+
+        QLabel *pathLabel = new QLabel(tr("Path:"));
+        QLabel *pathValueLabel = new QLabel(fileInfo.absoluteFilePath());
+        pathValueLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+        QLabel *sizeLabel = new QLabel(tr("Size:"));
+        qlonglong size = fileInfo.size()/1024;
+        QLabel *sizeValueLabel = new QLabel(tr("%1 K").arg(size));
+        sizeValueLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+        QLabel *lastReadLabel = new QLabel(tr("Last Read:"));
+        QLabel *lastReadValueLabel = new QLabel(fileInfo.lastRead().toString());
+        lastReadValueLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+        QLabel *lastModLabel = new QLabel(tr("Last Modified:"));
+        QLabel *lastModValueLabel = new QLabel(fileInfo.lastModified().toString());
+        lastModValueLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        mainLayout->addWidget(fileNameLabel);
+        mainLayout->addWidget(fileNameEdit);
+        mainLayout->addWidget(pathLabel);
+        mainLayout->addWidget(pathValueLabel);
+        mainLayout->addWidget(sizeLabel);
+        mainLayout->addWidget(sizeValueLabel);
+        mainLayout->addWidget(lastReadLabel);
+        mainLayout->addWidget(lastReadValueLabel);
+        mainLayout->addWidget(lastModLabel);
+        mainLayout->addWidget(lastModValueLabel);
+        mainLayout->addStretch(1);
+        setLayout(mainLayout);
+}
+#endif
 void MainWindow::on_pushButton_14_clicked()
 {
     ui->tabWidget->clear();//清空选项卡
@@ -544,27 +614,16 @@ void MainWindow::on_pushButton_14_clicked()
 
         ui->tabWidget->setTabPosition(QTabWidget::North);//设置选项卡的方位东南西北，默认在上方
 
-            ui->tabWidget->addTab(tabSports,tr("运动"));//在后面添加选项卡
-            ui->tabWidget->addTab(tabMusic,tr("音乐"));
-            ui->tabWidget->addTab(tabSoftware,QIcon("F:\\磊神图片\\icons\\1.ico"),tr("软件"));//在后面添加带图标的选项卡
-            ui->tabWidget->insertTab(3,tabDigital,tr("数码"));//插入选项卡
-            ui->tabWidget->insertTab(4,tabLanguage,QIcon("F:\\磊神图片\\icons\\3.ico"),tr("语言"));//插入带图标的选项卡
-            ui->tabWidget->setTabShape(QTabWidget::Triangular);//设置选项卡的形状
-            //ui->tabWidget->removeTab(0);//移除选项卡
+        ui->tabWidget->addTab(tabSports, tr("运动"));
+        ui->tabWidget->addTab(tabMusic, tr("音乐"));
+        ui->tabWidget->addTab(tabSoftware, tr("软件"));
+        ui->tabWidget->addTab(tabDigital, tr("数码"));
+        //ui->tabWidget->addTab(new GeneralTab(), tr("通用"));
 
-            ui->tabWidget->setTabIcon(0,QIcon("F:\\磊神图片\\icons\\2.ico"));//设置选项卡图标
-            ui->tabWidget->setTabIcon(1,QIcon("F:\\磊神图片\\icons\\4.ico"));//设置选项卡图标
-            ui->tabWidget->setTabIcon(3,QIcon("F:\\磊神图片\\icons\\5.ico"));//设置选项卡图标
-            ui->tabWidget->setIconSize(QSize(50,25));//设置图标的大小(选项卡的大小也会改变)
-            ui->tabWidget->setMovable(true);
-            ui->tabWidget->setTabsClosable(true);//在选项卡上添加关闭按钮
-            qDebug()<<"第一个选项卡名称："<<ui->tabWidget->tabText(0);//获取选项卡名称
-            qDebug()<<"iconSize:"<<ui->tabWidget->iconSize();//获取icon的尺寸
+        //ui->tabWidget->insertTab(4,tabLanguage,QIcon("F:\\磊神图片\\icons\\3.ico"),tr("语言"));//插入带图标的选项卡
+        //ui->tabWidget->setTabShape(QTabWidget::Triangular);//设置选项卡的形状
 
-            ui->tabWidget->setTabEnabled(0,false);//禁用选项卡
-            ui->tabWidget->setTabEnabled(1,false);
-            ui->tabWidget->setTabToolTip(2,tr("Beautiful"));//鼠标悬停弹出提示
-            ui->tabWidget->usesScrollButtons();//选项卡太多滚动
+
 }
 
 // 使用槽实现定时响应事件
@@ -642,4 +701,13 @@ void MainWindow::timerEvent(QTimerEvent *event)
         i++;
         ui->lcdNumber->display(i);
     }
+}
+
+void MainWindow::on_pushButton_17_clicked()
+{
+    delete dlg;
+    dlg = new Dialog;
+
+    dlg->setModal(true); // 默认为非模态，这里设为模态
+    dlg->show();
 }

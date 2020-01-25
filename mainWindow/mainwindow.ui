@@ -327,6 +327,19 @@
      <string>定时器测试2</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_17">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>90</y>
+      <width>91</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>模态子窗口</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -342,13 +355,20 @@
      <string>文件</string>
     </property>
     <addaction name="actionopen"/>
+    <addaction name="separator"/>
+    <addaction name="actionclose"/>
    </widget>
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionopen">
    <property name="text">
-    <string>open</string>
+    <string>open dlg</string>
+   </property>
+  </action>
+  <action name="actionclose">
+   <property name="text">
+    <string>close dlg</string>
    </property>
   </action>
  </widget>
