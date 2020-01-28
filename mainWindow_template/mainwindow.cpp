@@ -52,12 +52,20 @@ void MainWindow::initStatusBar()
     //ui->statusbar->setStyleSheet(QString("QStatusBar::item{border: 0px}")); // 不显示边框
     ui->statusbar->setSizeGripEnabled(false);//去掉状态栏右下角的三角
 
-
+    m_stsPinned = new QLabel();
     m_stsEmpty = new QLabel();
     m_stsDebugInfo = new QLabel();
     m_stsSysTime = new QLabel();
     m_stsCopyright = new QLabel();
     m_stsExit = new QLabel();
+
+    // 置顶图标
+    m_stsPinned->installEventFilter(this); // 安装事件过滤，以便获取其单击事件
+    m_stsPinned->setMinimumWidth(20);
+    // 贴图
+    QPixmap pinnedIcon(":/images/unpinned.bmp");
+    m_stsPinned->setPixmap(pinnedIcon);
+    ui->statusbar->addWidget(m_stsPinned);
 
     m_stsEmpty->setMinimumWidth(100);
     ui->statusbar->addWidget(m_stsEmpty);
@@ -100,6 +108,38 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             // TODO：直接退出还是发信号？
             emit sig_exit();
             return true; // 事件处理完毕
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else if (watched == m_stsPinned) // 置顶
+    {
+        if(event->type() == QEvent::MouseButtonPress)
+        {
+            static bool isTop = true;
+            Qt::WindowFlags winFlags  = Qt::Dialog;
+            winFlags = winFlags | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint;
+            if (isTop)
+            {
+                winFlags |= Qt::WindowStaysOnTopHint;
+                setWindowFlags(winFlags);
+                showNormal();
+                QPixmap pinnedIcon(":/images/pinned.bmp");
+                m_stsPinned->setPixmap(pinnedIcon);
+                isTop = false;
+            }
+            else
+            {
+                winFlags  &= ~Qt::WindowStaysOnTopHint;
+                setWindowFlags(winFlags);
+                showNormal();
+                QPixmap pinnedIcon(":/images/unpinned.bmp");
+                m_stsPinned->setPixmap(pinnedIcon);
+                isTop = true;
+            }
+            return true;
         }
         else
         {

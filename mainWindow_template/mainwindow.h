@@ -50,6 +50,7 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
 
     // 状态栏相关
+    QLabel* m_stsPinned;
     QLabel* m_stsEmpty;
     QLabel* m_stsDebugInfo;
     QLabel* m_stsSysTime;

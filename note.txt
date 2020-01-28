@@ -8,3 +8,7 @@
 
 listwidget菜单：
 https://blog.csdn.net/qq_37233607/article/details/78649151
+
+## 问题
+
+置顶操作，窗口会闪烁。

@@ -5,6 +5,8 @@
         <file>images/logo.png</file>
         <file>images/logo1.jpg</file>
         <file>images/logo1.ico</file>
+        <file>images/pinned.bmp</file>
+        <file>images/unpinned.bmp</file>
     </qresource>
     <qresource prefix="/subprefix">
         <file>images/logo.png</file>
