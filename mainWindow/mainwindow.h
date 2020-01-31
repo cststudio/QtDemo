@@ -61,7 +61,7 @@ public:
     void keyPressEvent(QKeyEvent *event);   // 按键按下
     void keyReleaseEvent(QKeyEvent *event); // 按键释放
 
-    void showDebugInfo(QString& str);
+    void showDebugInfo(QString str);
     void showDebugInfo(int& value);
 
     // 状态栏相关
@@ -128,6 +128,18 @@ private slots:
     void on_pushButton_16_clicked();
 
     void on_pushButton_17_clicked();
+
+    void on_lineEdit_textChanged(const QString &arg1);
+
+    void on_lineEdit_editingFinished();
+
+    void on_pushButton_18_clicked();
+
+    void on_pushButton_19_clicked();
+
+    void on_listView_doubleClicked(const QModelIndex &index);
+
+    void on_pushButton_20_clicked();
 
 private:
     Ui::MainWindow *ui;

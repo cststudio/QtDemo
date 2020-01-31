@@ -25,7 +25,7 @@ void MainWindow::initMainWindow()
 
     Qt::WindowFlags winFlags  = Qt::Dialog;
     winFlags = winFlags | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint;
-
+    //winFlags = Qt::WindowFullscreenButtonHint;
     setWindowFlags(winFlags);
 }
 
@@ -55,6 +55,58 @@ void MainWindow::initWindow()
     //ui->actionclose->setEnabled(false); // 有些互斥的，应该要考虑其逻辑关系，此处从略
     connect(ui->actionopen, &QAction::triggered, dlg, &Dialog::myshow);
     connect(ui->actionclose, &QAction::triggered, dlg, &Dialog::myclose);
+
+
+    ui->pushButton->setToolTip("button tips");
+    ui->horizontalSlider->setRange(0, 100);
+    ui->horizontalSlider->setValue(30);
+    ui->spinBox->setRange(0, 100);
+    ui->spinBox->setValue(30);
+
+    ui->lineEdit->setPlaceholderText("username");
+    ui->lineEdit->setText("lineEdit");
+    //ui->lineEdit->setReadOnly(true);
+    ui->lineEdit->setAlignment(Qt::AlignHCenter);
+    ui->lineEdit->setMaxLength(12);
+    //QFont qFont;
+    QFont qFont("Times", 10, QFont::Bold);
+    qFont.setBold(true);
+    ui->lineEdit->setFont(qFont);
+
+    // QLineEdit::Password 文字用圆点替换，
+    // QLineEdit::PasswordEchoOnEdit 输入时显示，结束后圆点替换
+    // QLineEdit::NoEcho // 不显示任何内容，用于长度保护
+    ui->lineEdit->setEchoMode(QLineEdit::Password);
+
+
+    ui->plainTextEdit->setPlaceholderText("sth text here");
+    ui->plainTextEdit->setPlainText("foo\r\n");
+    ui->plainTextEdit->appendHtml("<font color=\"red\"> red </font>");
+    ui->plainTextEdit->appendPlainText("add");
+    ui->plainTextEdit->setFont(qFont);
+    //ui->plainTextEdit->setReadOnly(true);
+
+
+    ui->textEdit->setPlaceholderText("sth text here");
+    ui->textEdit->setText("foo\r\n");
+    ui->textEdit->append("<font color=\"red\"> red </font>");
+    //ui->textEdit->setFont(qFont);
+    //ui->textEdit->setReadOnly(true);
+
+    //ui->textBrowser->setHtml("a<br>b");
+    ui->textBrowser->setText("hello world\n");
+    ui->textBrowser->append("a<br>b");
+
+
+    ui->radioButton->setChecked(true);
+
+
+    ui->progressBar->setRange(0, 100);
+    ui->progressBar->setValue(0);
+
+
+    ui->label_3->installEventFilter(this);
+
 }
 
 void MainWindow::initStatusBar()
@@ -113,7 +165,7 @@ void MainWindow::initStatusBar()
     connect(this, &MainWindow::sig_exit, qApp, &QApplication::quit); // 直接关联到全局的退出槽
 }
 
-void MainWindow::showDebugInfo(QString& str)
+void MainWindow::showDebugInfo(QString str)
 {
     m_stsDebugInfo->setText(str);
 }
@@ -254,9 +306,26 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             return false;
         }
     }
+    else if (watched == ui->label_3)
+    {
+        if(event->type() == QEvent::MouseButtonPress)
+        {
+            QMenu *menu = new QMenu();
+            QAction *test = new QAction("测试",this);
+
+            menu->addAction(test);
+            menu->exec(QCursor::pos());
+            //connect(test, SIGNAL(triggered(bool)), this, SLOT(onTest()));
+            return true; // 事件处理完毕
+        }
+        else
+        {
+            return false;
+        }
+    }
     else
     {
-        return QWidget::eventFilter(watched, event);
+        return QMainWindow::eventFilter(watched, event);
     }
 }
 
@@ -351,6 +420,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 
 void MainWindow::on_pushButton_clicked()
 {
+
+    ui->pushButton->setVisible(false);
+
     //QMessageBox::about(this, "关于", "这是带html标签的<font color='red'>信息</font>");
     //QMessageBox::information(this, tr("提示标题"), tr("这是信息窗口"));
     //QMessageBox::question(this, tr("询问标题"), tr("信息体信息体信息体信息体"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -365,6 +437,7 @@ void MainWindow::on_pushButton_clicked()
     if (ret == QMessageBox::Yes)
     {
         QMessageBox::about(this, "关于", "这是带html标签的<font color='red'>信息</font>");
+        ui->pushButton->setVisible(true);
     }
     else if (ret == QMessageBox::No)
     {
@@ -750,4 +823,100 @@ void MainWindow::on_pushButton_17_clicked()
 
     dlg->setModal(true); // 默认为非模态，这里设为模态
     dlg->show();
+}
+
+void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+{
+    QString strUsername = ui->lineEdit->text();
+    ui->plainTextEdit->setPlainText(strUsername);
+}
+
+void MainWindow::on_lineEdit_editingFinished()
+{
+    QString strUsername = ui->lineEdit->text();
+    ui->textEdit->setPlainText(strUsername);
+}
+
+void MainWindow::on_pushButton_18_clicked()
+{
+    for (int i = 0; i < 100; i++)
+    {
+        ui->progressBar->setValue(i+1);
+
+        // 业务操作，如读取文件，发送数据等
+        // 延时示例
+        for (int j = 0; j < 100000; j++)
+            for (int k = 0; k < 100; k++);
+    }
+}
+
+#include <QStringListModel>
+#include <QStandardItemModel>
+#include <QModelIndex>
+void MainWindow::on_pushButton_19_clicked()
+{
+    QStringListModel *Model = NULL;
+    QStandardItemModel *ItemModel = NULL;
+
+    ItemModel = new QStandardItemModel(this);
+
+    QStringList lst;
+    lst << "foo" << "bar" << "123" << "hello world";
+
+    QList<QStandardItem *> items;
+
+    foreach (QString itm, lst)
+    {
+        QStandardItem *item = new QStandardItem(itm);
+        items.push_back(item);
+        //ItemModel->appendRow(item);
+        //ItemModel->appendColumn(item);
+    }
+    ItemModel->appendColumn(items);
+
+    ui->listView->setModel(ItemModel);
+    // 复杂的应用待议
+}
+
+void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
+{
+    QString strTemp;
+    strTemp = index.data().toString();
+//    QMessageBox msg;
+//    msg.setText(strTemp);
+//    msg.exec();
+    showDebugInfo(strTemp);
+}
+
+void MainWindow::on_pushButton_20_clicked()
+{
+    QStandardItemModel* model = new QStandardItemModel(5, 3, this);
+    ui->tableView->setModel(model);
+
+    // 头部
+    QStringList headList;
+    headList << "序号" << "姓名" << "年龄";
+    for (int i = 0; i < headList.size(); i++)
+    {
+        model->setHeaderData(i, Qt::Horizontal, headList.at(i));
+        ui->tableView->setColumnWidth(i, 40); // 宽度
+    }
+
+    // 序号
+    for (int i = 0; i < 5; i++)
+    {
+        QStandardItem *item = new QStandardItem(QString::number(i+1));
+        model->setItem(i, 0, item);
+        model->item(i, 0)->setForeground(QBrush(QColor(255, 0, 0)));
+    }
+
+    // 数据
+    model->setItem(0, 1, new QStandardItem("Jim"));
+    model->setItem(0, 2, new QStandardItem("35"));
+    model->setItem(1, 1, new QStandardItem("Tom"));
+    model->setItem(1, 2, new QStandardItem("32"));
+
+    // 隔一行变色，用以区分
+    ui->tableView->setAlternatingRowColors(true);
+
 }
