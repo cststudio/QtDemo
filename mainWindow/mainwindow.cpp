@@ -920,3 +920,49 @@ void MainWindow::on_pushButton_20_clicked()
     ui->tableView->setAlternatingRowColors(true);
 
 }
+
+void MainWindow::on_pushButton_21_clicked()
+{
+    QStandardItemModel* model = new QStandardItemModel(ui->treeView);
+    ui->treeView->setModel(model);
+
+    // 头部
+    QStringList headList;
+    headList << "树形列表";
+    model->setHorizontalHeaderLabels(headList);
+
+    QStandardItem* itemProject = new QStandardItem("项目");
+    model->appendRow(itemProject);
+
+    QStandardItem* itemChild = new QStandardItem("子项");
+    itemProject->appendRow(itemChild);
+
+    QStandardItem* itemChild11 = new QStandardItem("子子项");
+    itemChild->appendRow(itemChild11);
+
+    QStandardItem* itemChild2 = new QStandardItem("子项2");
+    itemProject->appendRow(itemChild2);
+#if 0
+    // 头部
+    QStringList headList;
+    headList << "项目" << "详细信息";
+    model->setHorizontalHeaderLabels(headList);
+    //ui->treeView->setColumnWidth(0, 40); // 第一列宽度
+
+    QStandardItem* itemProject = new QStandardItem("项目");
+    model->appendRow(itemProject);
+    model->setItem(model->indexFromItem(itemProject).row(), 1, new QStandardItem("项目信息说明"));
+
+    QStandardItem* itemChild = new QStandardItem("子项");
+    itemProject->appendRow(itemChild);
+
+    itemProject->setChild(itemChild->index().row(), 1, new QStandardItem("信息说明"));
+
+    QStandardItem* itemChild11 = new QStandardItem("子子项");
+    itemChild->appendRow(itemChild11);
+
+    QStandardItem* itemChild2 = new QStandardItem("子项2");
+    itemProject->appendRow(itemChild2);
+#endif
+
+}
