@@ -136,7 +136,6 @@ void DlgTab1::on_pushButton_20_clicked()
 
     // 隔一行变色，用以区分
     ui->tableView->setAlternatingRowColors(true);
-
 }
 
 void DlgTab1::on_pushButton_21_clicked()
@@ -196,10 +195,28 @@ void DlgTab1::on_pushButton_clicked()
 
 void DlgTab1::on_pushButton_2_clicked()
 {
+    // TODO：去掉默认的序号？？
+    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setRowCount(5);
+    ui->tableWidget->setColumnWidth(0, 30);
+    ui->tableWidget->setAlternatingRowColors(true);
+    for (int i = 0; i < 5; i++)
+    {
+        QTableWidgetItem *newItem = new QTableWidgetItem(tr("%1").arg(i+1));
+        ui->tableWidget->setItem(i, 0, newItem);
+    }
 
+    ui->tableWidget->setItem(0, 1, new QTableWidgetItem(tr("Jim")));
+    ui->tableWidget->setItem(1, 1, new QTableWidgetItem(tr("Tom")));
 }
 
 void DlgTab1::on_pushButton_3_clicked()
 {
+    ui->treeWidget->setHeaderItem(new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("treeHeader"))));
 
+    ui->treeWidget->setColumnCount(1);
+    QList<QTreeWidgetItem *> items;
+    for (int i = 0; i < 10; ++i)
+        items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("item: %1").arg(i))));
+    ui->treeWidget->insertTopLevelItems(0, items);
 }
