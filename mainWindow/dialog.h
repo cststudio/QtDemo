@@ -18,6 +18,12 @@ public:
 
     int m_opened;
 
+    void intWindow();
+
+    bool eventFilter(QObject *watched, QEvent *event);
+
+    void drawTest();
+
 signals:
     void sig_backMain(int a, int b); // 通知主界面信号，参数仅作示例
 

@@ -19,16 +19,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     common.cpp \
     dialog.cpp \
+    dlgtab1.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     common.h \
     dialog.h \
+    dlgtab1.h \
     mainwindow.h
 
 FORMS += \
     dialog.ui \
+    dlgtab1.ui \
     mainwindow.ui
 
 # Default rules for deployment.

@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
     initMainWindow();
 
     initWindow();
+
+    initTabWidget();
 }
 
 MainWindow::~MainWindow()
@@ -62,41 +64,6 @@ void MainWindow::initWindow()
     ui->horizontalSlider->setValue(30);
     ui->spinBox->setRange(0, 100);
     ui->spinBox->setValue(30);
-
-    ui->lineEdit->setPlaceholderText("username");
-    ui->lineEdit->setText("lineEdit");
-    //ui->lineEdit->setReadOnly(true);
-    ui->lineEdit->setAlignment(Qt::AlignHCenter);
-    ui->lineEdit->setMaxLength(12);
-    //QFont qFont;
-    QFont qFont("Times", 10, QFont::Bold);
-    qFont.setBold(true);
-    ui->lineEdit->setFont(qFont);
-
-    // QLineEdit::Password 文字用圆点替换，
-    // QLineEdit::PasswordEchoOnEdit 输入时显示，结束后圆点替换
-    // QLineEdit::NoEcho // 不显示任何内容，用于长度保护
-    ui->lineEdit->setEchoMode(QLineEdit::Password);
-
-
-    ui->plainTextEdit->setPlaceholderText("sth text here");
-    ui->plainTextEdit->setPlainText("foo\r\n");
-    ui->plainTextEdit->appendHtml("<font color=\"red\"> red </font>");
-    ui->plainTextEdit->appendPlainText("add");
-    ui->plainTextEdit->setFont(qFont);
-    //ui->plainTextEdit->setReadOnly(true);
-
-
-    ui->textEdit->setPlaceholderText("sth text here");
-    ui->textEdit->setText("foo\r\n");
-    ui->textEdit->append("<font color=\"red\"> red </font>");
-    //ui->textEdit->setFont(qFont);
-    //ui->textEdit->setReadOnly(true);
-
-    //ui->textBrowser->setHtml("a<br>b");
-    ui->textBrowser->setText("hello world\n");
-    ui->textBrowser->append("a<br>b");
-
 
     ui->radioButton->setChecked(true);
 
@@ -175,6 +142,23 @@ void MainWindow::showDebugInfo(int& value)
     m_stsDebugInfo->setNum(value);
 }
 
+#include <QTextEdit>
+void MainWindow::initTabWidget()
+{
+    ui->tabWidget->clear();//清空选项卡
+
+    // 选项卡的方位，右、下、左、上 <--> 东南西北，默认在上方，即北
+    //ui->tabWidget->setTabPosition(QTabWidget::North);
+    //ui->tabWidget->setTabPosition(QTabWidget::West);
+
+
+    ui->tabWidget->addTab(new DlgTab1(), "列表测试");
+
+    QTextEdit *page = new QTextEdit();
+    page->setText("这是即时创建的一个控件");
+    ui->tabWidget->addTab(page, " 单独控件");
+    //ui->tabWidget->setTabShape(QTabWidget::Triangular);//设置选项卡的形状
+}
 
 void MainWindow::initSystemTray()
 {
@@ -659,83 +643,8 @@ void MainWindow::on_pushButton_13_clicked()
     // TODO：如何响应事件
 }
 
-/////////////
-
-#if 0
-////////////////////////
-#include <QWidget>
-#include <QFileInfo>
-#include <QLineEdit>
-#include <QVBoxLayout>
-
-class GeneralTab : public QWidget
-{
-    Q_OBJECT
-
-public:
-    explicit GeneralTab(QWidget *parent = nullptr);
-};
-
-GeneralTab::GeneralTab(QWidget *parent)
-    : QWidget(parent)
-{
-    QFileInfo fileInfo(".");
-    QLabel *fileNameLabel = new QLabel(tr("File Name:"));
-        QLineEdit *fileNameEdit = new QLineEdit(fileInfo.fileName());
-
-        QLabel *pathLabel = new QLabel(tr("Path:"));
-        QLabel *pathValueLabel = new QLabel(fileInfo.absoluteFilePath());
-        pathValueLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-
-        QLabel *sizeLabel = new QLabel(tr("Size:"));
-        qlonglong size = fileInfo.size()/1024;
-        QLabel *sizeValueLabel = new QLabel(tr("%1 K").arg(size));
-        sizeValueLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-
-        QLabel *lastReadLabel = new QLabel(tr("Last Read:"));
-        QLabel *lastReadValueLabel = new QLabel(fileInfo.lastRead().toString());
-        lastReadValueLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-
-        QLabel *lastModLabel = new QLabel(tr("Last Modified:"));
-        QLabel *lastModValueLabel = new QLabel(fileInfo.lastModified().toString());
-        lastModValueLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-
-        QVBoxLayout *mainLayout = new QVBoxLayout;
-        mainLayout->addWidget(fileNameLabel);
-        mainLayout->addWidget(fileNameEdit);
-        mainLayout->addWidget(pathLabel);
-        mainLayout->addWidget(pathValueLabel);
-        mainLayout->addWidget(sizeLabel);
-        mainLayout->addWidget(sizeValueLabel);
-        mainLayout->addWidget(lastReadLabel);
-        mainLayout->addWidget(lastReadValueLabel);
-        mainLayout->addWidget(lastModLabel);
-        mainLayout->addWidget(lastModValueLabel);
-        mainLayout->addStretch(1);
-        setLayout(mainLayout);
-}
-#endif
 void MainWindow::on_pushButton_14_clicked()
 {
-    ui->tabWidget->clear();//清空选项卡
-
-        QWidget *tabSports=new QWidget(this);
-        QWidget *tabMusic=new QWidget(this);
-        QWidget *tabSoftware=new QWidget(this);
-        QWidget *tabDigital=new QWidget(this);
-        QWidget *tabLanguage=new QWidget(this);
-
-        ui->tabWidget->setTabPosition(QTabWidget::North);//设置选项卡的方位东南西北，默认在上方
-
-        ui->tabWidget->addTab(tabSports, tr("运动"));
-        ui->tabWidget->addTab(tabMusic, tr("音乐"));
-        ui->tabWidget->addTab(tabSoftware, tr("软件"));
-        ui->tabWidget->addTab(tabDigital, tr("数码"));
-        //ui->tabWidget->addTab(new GeneralTab(), tr("通用"));
-
-        //ui->tabWidget->insertTab(4,tabLanguage,QIcon("F:\\磊神图片\\icons\\3.ico"),tr("语言"));//插入带图标的选项卡
-        //ui->tabWidget->setTabShape(QTabWidget::Triangular);//设置选项卡的形状
-
 
 }
 
@@ -825,18 +734,6 @@ void MainWindow::on_pushButton_17_clicked()
     dlg->show();
 }
 
-void MainWindow::on_lineEdit_textChanged(const QString &arg1)
-{
-    QString strUsername = ui->lineEdit->text();
-    ui->plainTextEdit->setPlainText(strUsername);
-}
-
-void MainWindow::on_lineEdit_editingFinished()
-{
-    QString strUsername = ui->lineEdit->text();
-    ui->textEdit->setPlainText(strUsername);
-}
-
 void MainWindow::on_pushButton_18_clicked()
 {
     for (int i = 0; i < 100; i++)
@@ -848,121 +745,4 @@ void MainWindow::on_pushButton_18_clicked()
         for (int j = 0; j < 100000; j++)
             for (int k = 0; k < 100; k++);
     }
-}
-
-#include <QStringListModel>
-#include <QStandardItemModel>
-#include <QModelIndex>
-void MainWindow::on_pushButton_19_clicked()
-{
-    QStringListModel *Model = NULL;
-    QStandardItemModel *ItemModel = NULL;
-
-    ItemModel = new QStandardItemModel(this);
-
-    QStringList lst;
-    lst << "foo" << "bar" << "123" << "hello world";
-
-    QList<QStandardItem *> items;
-
-    foreach (QString itm, lst)
-    {
-        QStandardItem *item = new QStandardItem(itm);
-        items.push_back(item);
-        //ItemModel->appendRow(item);
-        //ItemModel->appendColumn(item);
-    }
-    ItemModel->appendColumn(items);
-
-    ui->listView->setModel(ItemModel);
-    // 复杂的应用待议
-}
-
-void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
-{
-    QString strTemp;
-    strTemp = index.data().toString();
-//    QMessageBox msg;
-//    msg.setText(strTemp);
-//    msg.exec();
-    showDebugInfo(strTemp);
-}
-
-void MainWindow::on_pushButton_20_clicked()
-{
-    QStandardItemModel* model = new QStandardItemModel(5, 3, this);
-    ui->tableView->setModel(model);
-
-    // 头部
-    QStringList headList;
-    headList << "序号" << "姓名" << "年龄";
-    for (int i = 0; i < headList.size(); i++)
-    {
-        model->setHeaderData(i, Qt::Horizontal, headList.at(i));
-        ui->tableView->setColumnWidth(i, 40); // 宽度
-    }
-
-    // 序号
-    for (int i = 0; i < 5; i++)
-    {
-        QStandardItem *item = new QStandardItem(QString::number(i+1));
-        model->setItem(i, 0, item);
-        model->item(i, 0)->setForeground(QBrush(QColor(255, 0, 0)));
-    }
-
-    // 数据
-    model->setItem(0, 1, new QStandardItem("Jim"));
-    model->setItem(0, 2, new QStandardItem("35"));
-    model->setItem(1, 1, new QStandardItem("Tom"));
-    model->setItem(1, 2, new QStandardItem("32"));
-
-    // 隔一行变色，用以区分
-    ui->tableView->setAlternatingRowColors(true);
-
-}
-
-void MainWindow::on_pushButton_21_clicked()
-{
-    QStandardItemModel* model = new QStandardItemModel(ui->treeView);
-    ui->treeView->setModel(model);
-
-    // 头部
-    QStringList headList;
-    headList << "树形列表";
-    model->setHorizontalHeaderLabels(headList);
-
-    QStandardItem* itemProject = new QStandardItem("项目");
-    model->appendRow(itemProject);
-
-    QStandardItem* itemChild = new QStandardItem("子项");
-    itemProject->appendRow(itemChild);
-
-    QStandardItem* itemChild11 = new QStandardItem("子子项");
-    itemChild->appendRow(itemChild11);
-
-    QStandardItem* itemChild2 = new QStandardItem("子项2");
-    itemProject->appendRow(itemChild2);
-#if 0
-    // 头部
-    QStringList headList;
-    headList << "项目" << "详细信息";
-    model->setHorizontalHeaderLabels(headList);
-    //ui->treeView->setColumnWidth(0, 40); // 第一列宽度
-
-    QStandardItem* itemProject = new QStandardItem("项目");
-    model->appendRow(itemProject);
-    model->setItem(model->indexFromItem(itemProject).row(), 1, new QStandardItem("项目信息说明"));
-
-    QStandardItem* itemChild = new QStandardItem("子项");
-    itemProject->appendRow(itemChild);
-
-    itemProject->setChild(itemChild->index().row(), 1, new QStandardItem("信息说明"));
-
-    QStandardItem* itemChild11 = new QStandardItem("子子项");
-    itemChild->appendRow(itemChild11);
-
-    QStandardItem* itemChild2 = new QStandardItem("子项2");
-    itemProject->appendRow(itemChild2);
-#endif
-
 }

@@ -25,6 +25,8 @@
 
 #include "dialog.h"
 
+#include "dlgtab1.h"
+
 // 界面显示中文，文件需要使用UTF8 BOM格式保存，否则乱码--windows vs编译器测试
 #pragma execution_character_set("utf-8")
 
@@ -47,6 +49,8 @@ public:
     void initWindow();
     void initStatusBar();
     void initSystemTray();
+
+    void initTabWidget();
 
     void mousePressEvent(QMouseEvent *event); // 鼠标按下
     void mouseMoveEvent(QMouseEvent *event); // 鼠标移动
@@ -129,19 +133,7 @@ private slots:
 
     void on_pushButton_17_clicked();
 
-    void on_lineEdit_textChanged(const QString &arg1);
-
-    void on_lineEdit_editingFinished();
-
     void on_pushButton_18_clicked();
-
-    void on_pushButton_19_clicked();
-
-    void on_listView_doubleClicked(const QModelIndex &index);
-
-    void on_pushButton_20_clicked();
-
-    void on_pushButton_21_clicked();
 
 private:
     Ui::MainWindow *ui;
