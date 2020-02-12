@@ -44,7 +44,8 @@ void MainWindow::initWindow()
     m_stsCopyright = nullptr;
 
     // 主窗体初始化（注：如果和其它子窗体有前后顺序的，需要注意）
-    initStatusBar(); // 状态栏
+    //initStatusBar(); // 状态栏
+    initStatusBar2(); // 状态栏
 
     // 额外的窗体初始化
     if (dlg == nullptr)
@@ -132,14 +133,61 @@ void MainWindow::initStatusBar()
     connect(this, &MainWindow::sig_exit, qApp, &QApplication::quit); // 直接关联到全局的退出槽
 }
 
+void MainWindow::initStatusBar2()
+{
+    // 状态栏分别为：
+    // 临时信息（可不用）做一空的label占位
+    // 提示信息（可多个）
+    // 系统时间
+    // 版本信息（或版权声明）
+
+    m_stsEmpty = new QLabel();
+    m_stsDebugInfo = new QLabel();
+    m_stsSysTime = new QLabel();
+    m_stsCopyright = new QLabel();
+    m_stsExit = new QLabel();
+
+    m_stsEmpty->setMinimumWidth(100);
+    ui->statusbar->addPermanentWidget(m_stsEmpty);
+    m_stsEmpty->setText("cnt: 250");
+
+    m_stsDebugInfo->setMinimumWidth(100);
+    ui->statusbar->addPermanentWidget(m_stsDebugInfo);
+
+    ui->statusbar->showMessage(tr("临时信息!"), 500);
+
+    QDateTime dateTime(QDateTime::currentDateTime());
+    QString timeStr = dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
+    m_stsSysTime->setText(timeStr);
+    ui->statusbar->addPermanentWidget(m_stsSysTime);
+
+    // 版权信息
+    m_stsCopyright->setFrameStyle(QFrame::NoFrame);
+    m_stsCopyright->setText(tr("  <a href=\"https://www.latelee.org\">技术主页</a>  "));
+    m_stsCopyright->setOpenExternalLinks(true);
+    ui->statusbar->addPermanentWidget(m_stsCopyright);
+
+    // 退出图标
+    m_stsExit->installEventFilter(this); // 安装事件过滤，以便获取其单击事件
+    m_stsExit->setToolTip("Exit App");
+    // 贴图
+    QPixmap exitIcon(":/images/exit.jpg");
+    m_stsExit->setMinimumWidth(22);
+    m_stsExit->setPixmap(exitIcon);
+    ui->statusbar->addPermanentWidget(m_stsExit);
+
+    connect(this, &MainWindow::sig_exit, qApp, &QApplication::quit); // 直接关联到全局的退出槽
+}
+
 void MainWindow::showDebugInfo(QString str)
 {
-    m_stsDebugInfo->setText(str);
+    //m_stsDebugInfo->setText(str);
+    ui->statusbar->showMessage(str, 500);
 }
 
 void MainWindow::showDebugInfo(int& value)
 {
-    m_stsDebugInfo->setNum(value);
+    ui->statusbar->showMessage(QString::number(value), 500);
 }
 
 #include <QTextEdit>
@@ -152,6 +200,7 @@ void MainWindow::initTabWidget()
     //ui->tabWidget->setTabPosition(QTabWidget::West);
 
 
+    ui->tabWidget->addTab(new dlgtab2(), "画图测试");
     ui->tabWidget->addTab(new DlgTab1(), "列表测试");
 
     QTextEdit *page = new QTextEdit();

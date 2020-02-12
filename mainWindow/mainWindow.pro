@@ -20,6 +20,7 @@ SOURCES += \
     common.cpp \
     dialog.cpp \
     dlgtab1.cpp \
+    dlgtab2.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -27,11 +28,13 @@ HEADERS += \
     common.h \
     dialog.h \
     dlgtab1.h \
+    dlgtab2.h \
     mainwindow.h
 
 FORMS += \
     dialog.ui \
     dlgtab1.ui \
+    dlgtab2.ui \
     mainwindow.ui
 
 # Default rules for deployment.

@@ -26,6 +26,7 @@
 #include "dialog.h"
 
 #include "dlgtab1.h"
+#include "dlgtab2.h"
 
 // 界面显示中文，文件需要使用UTF8 BOM格式保存，否则乱码--windows vs编译器测试
 #pragma execution_character_set("utf-8")
@@ -48,6 +49,7 @@ public:
     void initMainWindow();
     void initWindow();
     void initStatusBar();
+    void initStatusBar2();
     void initSystemTray();
 
     void initTabWidget();
@@ -75,6 +77,7 @@ public:
     QLabel* m_stsSysTime;
     QLabel* m_stsCopyright;
     QLabel* m_stsExit;
+
 
     QSystemTrayIcon *trayicon;
     QMenu *trayiconMenu;
